@@ -14,9 +14,7 @@ link-flags=-m32 -ffreestanding -O0 -nostdlib -T $(target)/link.ld
 run-flags=-drive format=raw,file=$(target)/$(out) -m 2G -monitor stdio
 
 all:
-	@if [ "$(strip $(asm-sources))" != "" ];\
-	then $(MAKE) $(asm-objects);\
-	fi
+	$(MAKE) $(asm-objects)
 	$(MAKE) $(cpp-objects)
 	$(MAKE) kernel
 	$(MAKE) boot
