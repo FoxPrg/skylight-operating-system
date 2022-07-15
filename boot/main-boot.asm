@@ -27,7 +27,6 @@ _start:
 	push word [_end+5]
 	pop es
 	mov di, [_end+4]
-	and di, 0x000f
 	add di, _end
 	call memory_get_map
 
@@ -49,8 +48,6 @@ _jumping_to_kernel:
 	push ecx				;	size of entry
 	push esi				;	entries count
 	push edi				;	address of map
-	mov ebp, 0x00000c00
-	mov esp, ebp
 	call [_end]
 	jmp $
 	[bits 16]

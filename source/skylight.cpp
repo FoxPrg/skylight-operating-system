@@ -1,3 +1,5 @@
-extern "C" void SkylightEntry() {
-	while (1) {}
+#include <typedefs.h>
+
+EXTERN_C VOID SkylightEntry() {
+	DeclareAssembly("jmp .");
 }
