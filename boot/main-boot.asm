@@ -31,12 +31,12 @@ _start:
 	add di, _end
 	call memory_get_map
 
-	push di
+	and edi, 0x0000ffff
+	mov ax, di
 	push es
 	pop di
 	shl edi, 4
-	pop di
-	and edi, 0x000fffff
+	add di, ax
 	and ecx, 0x000000ff
 	and esi, 0x0000ffff
 
