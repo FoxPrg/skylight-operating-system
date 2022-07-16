@@ -1,9 +1,10 @@
 #ifndef SKYLIGHT_H
 #define SKYLIGHT_H
 
-#include <gdt.h>
-#include <idt.h>
-#include <pic.h>
+#include <drivers/tty.h>
+#include <drivers/gdt.h>
+#include <drivers/idt.h>
+#include <drivers/pic.h>
 
 #define KERNEL_CODE_SEGMENT		0x08
 

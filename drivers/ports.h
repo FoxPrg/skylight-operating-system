@@ -1,7 +1,7 @@
 #ifndef PORTS_H
 #define PORTS_H
 
-#include <typedefs.h>
+#include "typedefs.h"
 
 VOID PortsWriteByte(
 	WORD wPort,

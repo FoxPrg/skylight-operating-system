@@ -1,4 +1,4 @@
-#include <gdt.h>
+#include "gdt.h"
 
 VOID InitializeGdtEntry(
 	PGLOBAL_DESCRIPTOR_TABLE_ENTRY pEntry,

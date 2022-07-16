@@ -45,9 +45,9 @@ times 0x1fe - $ + $$ db 0
 dw 0xaa55
 
 _main_boot_start:
-incbin "../build/i386/main-boot.bin"
+incbin "main-boot.bin"
 _main_boot_end:
 
 _kernel_start:
-incbin "../build/i386/kernel.bin"
+incbin "../build/bin/kernel.bin"
 _kernel_end:

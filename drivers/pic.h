@@ -1,7 +1,7 @@
 #ifndef PIC_H
 #define PIC_H
 
-#include <ports.h>
+#include "ports.h"
 
 #define PIC_PORT_MASTER_COMMAND				0x20
 #define PIC_PORT_MASTER_DATA				0x21

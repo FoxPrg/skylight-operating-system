@@ -53,9 +53,9 @@ _jumping_to_kernel:
 	[bits 16]
 
 
-%include "../boot/cpu.asm"
-%include "../boot/disk.asm"
-%include "../boot/memory.asm"
+%include "cpu.asm"
+%include "disk.asm"
+%include "memory.asm"
 
 times 512 - $ + $$ db 0
 _end:

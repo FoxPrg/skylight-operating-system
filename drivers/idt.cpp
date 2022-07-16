@@ -1,4 +1,4 @@
-#include <idt.h>
+#include "idt.h"
 
 VOID InitializeIdtEntry(
 	PINTERRUPT_DESCRIPTOR_TABLE_ENTRY pEntry,

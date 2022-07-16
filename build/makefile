@@ -1,17 +1,16 @@
-target=i386
 asm=nasm
 cpp=$(target)-elf-g++
-emu=qemu-system-$(target)
+emu=qemu-system-x86_64
 out=skylight.bin
 
-cpp-sources=$(shell find ../source -name "*.cpp")
-asm-sources=$(shell find ../source -name "*.asm")
+cpp-sources=$(shell find ../drivers -name "*.cpp") $(shell find ../kernel -name "*.cpp")
+asm-sources=$(shell find ../drivers -name "*.asm") $(shell find ../kernel -name "*.asm")
 cpp-objects=$(cpp-sources:.cpp=-cpp.o)
 asm-objects=$(asm-sources:.asm=-asm.o)
 
-compile-flags=-std=c++17 -m32 -ffreestanding -nostdlib -O0 -Wall -Wextra -fno-exceptions -fno-rtti -I ../include
-link-flags=-m32 -ffreestanding -O0 -nostdlib -T $(target)/link.ld
-run-flags=-drive format=raw,file=$(target)/$(out) -m 2G -monitor stdio
+compile-flags=-std=c++17 -m32 -ffreestanding -nostdlib -O0 -Wall -Wextra -fno-exceptions -fno-rtti -I ../
+link-flags=-m32 -ffreestanding -O0 -nostdlib -T link.ld -march=$(target)
+run-flags=-drive format=raw,file=bin/$(out) -m 2G -monitor stdio
 
 all:
 	$(MAKE) $(asm-objects)
@@ -28,14 +27,14 @@ all:
 	$(asm) -felf32 $< -o $@
 
 kernel:	$(cpp-objects) $(asm-objects)
-	$(cpp) $^ $(link-flags) -o $(target)/$@.bin
+	$(cpp) $^ $(link-flags) -o bin/$@.bin
 
 boot:
-	$(asm) -fbin ../boot/main-boot.asm -o $(target)/main-boot.bin
-	$(asm) -fbin ../boot/pre-boot.asm -o $(target)/$(out)
+	$(asm) -i../boot/ -fbin ../boot/main-boot.asm -o ../boot/main-boot.bin
+	$(asm) -i../boot/ -fbin ../boot/pre-boot.asm -o bin/$(out)
 
 run:
 	$(emu) $(run-flags)
 
 clean:
-	rm -rf *.bin **/*.bin $(cpp-objects) $(asm-objects)
+	rm -rf ../**/*.bin  ./**/*.bin *.bin $(cpp-objects) $(asm-objects) 

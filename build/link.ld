@@ -1,6 +1,5 @@
 ENTRY(SkylightEntry)
 OUTPUT_FORMAT(binary)
-OUTPUT_ARCH(i386)
 SECTIONS {
 	SkylightBegin = 0x0c00;
 	. = SkylightBegin;

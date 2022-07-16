@@ -1,7 +1,7 @@
 #ifndef IDT_H
 #define IDT_H
 
-#include <typedefs.h>
+#include "typedefs.h"
 
 #define IDT_FLAG_GATE_TASK		0x05
 #define IDT_FLAG_GATE_INT16		0x06

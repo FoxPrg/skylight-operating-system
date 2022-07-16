@@ -1,8 +1,10 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
-#define DeclareAssembly(...)	__asm__ __volatile__(__VA_ARGS__)
-#define DeclareAttribute(...)	__attribute__((__VA_ARGS__))
+#define DeclareAssembly(...)			__asm__ __volatile__(__VA_ARGS__)
+#define DeclareAttribute(...)			__attribute__((__VA_ARGS__))
+#define AlignUp(__value, __alignment)	(((__value) + (__alignment) - 1) & ~((__alignment) - 1))
+#define AlignDown(__value, __alignment)	((__value) & ~((__alignment) - 1))
 
 typedef char CHAR, INT8, *PCHAR, *PINT8;
 typedef unsigned char UCHAR, UINT8, BYTE, *PUCHAR, *PUINT8, *PBYTE;

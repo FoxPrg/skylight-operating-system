@@ -1,4 +1,4 @@
-#include <skylight.h>
+#include "skylight.h"
 
 GLOBAL_DESCRIPTOR_TABLE_ENTRY gdt[3];
 GLOBAL_DESCRIPTOR_TABLE_REGISTER gdtRegister;
@@ -16,11 +16,15 @@ EXTERN_C VOID CpuHardwareInterruptRequestHandler(PCPU_REQUEST_REGISTERS pRegiste
 }
 
 EXTERN_C VOID SkylightEntry() {
+	TtyPrintFormat("Loading GDT...\t", TTY_COLOR_YELLOW);
+
 	InitializeGdtEntry(&gdt[0], 0, 0, 0, 0);
 	InitializeGdtEntry(&gdt[1], 0xffff, 0, 0x9a, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
 	InitializeGdtEntry(&gdt[2], 0xffff, 0, 0x92, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
 	InitializeGdtRegister(&gdtRegister, gdt, sizeof(gdt)/sizeof(gdt[0]));
 	LoadGdtRegister(&gdtRegister);
+
+	TtyPrintFormat("%ebDONE%ee\r\nLoading IDT, exception handlers...\t", TTY_COLOR_LIME);
 
 	InitializeIdtEntry(&idt[0], (SIZE_T)CpuExceptionStub0, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
 	InitializeIdtEntry(&idt[1], (SIZE_T)CpuExceptionStub1, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
@@ -57,8 +61,13 @@ EXTERN_C VOID SkylightEntry() {
 	InitializeIdtRegister(&idtRegister, idt, sizeof(idt)/sizeof(idt[0]));
 	LoadIdtRegister(&idtRegister);
 
+	TtyPrintFormat("%ebDONE%ee\r\nMasking & remapping hardware interrupts...\t", TTY_COLOR_LIME);
+
 	PicMaskAll();
 	PicRemapVectors(0x20, 0x28);
+
+	TtyPrintFormat("%ebDONE%ee\r\nLoading hardware interrupt handlers...\t", TTY_COLOR_LIME);
+
 	InitializeIdtEntry(&idt[32], (SIZE_T)CpuHardwareInterruptRequestStub0, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
 	InitializeIdtEntry(&idt[33], (SIZE_T)CpuHardwareInterruptRequestStub1, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
 	InitializeIdtEntry(&idt[34], (SIZE_T)CpuHardwareInterruptRequestStub2, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
@@ -76,6 +85,8 @@ EXTERN_C VOID SkylightEntry() {
 	InitializeIdtEntry(&idt[46], (SIZE_T)CpuHardwareInterruptRequestStub14, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
 	InitializeIdtEntry(&idt[47], (SIZE_T)CpuHardwareInterruptRequestStub15, KERNEL_CODE_SEGMENT, IDT_FLAG_GATE_INT32 | IDT_FLAG_DPL_KERNEL | IDT_FLAG_PRESENT);
 	DeclareAssembly("sti");
+
+	TtyPrintFormat("%ebDONE%ee\r\n", TTY_COLOR_LIME);
 
 	DeclareAssembly("jmp .");
 }

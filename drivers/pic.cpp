@@ -1,4 +1,4 @@
-#include <pic.h>
+#include "pic.h"
 
 VOID PicRemapVectors(
 	BYTE bMaster,

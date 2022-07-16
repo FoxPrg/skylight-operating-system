@@ -1,7 +1,7 @@
 #ifndef GDT_H
 #define GDT_H
 
-#include <typedefs.h>
+#include "typedefs.h"
 
 #define GDT_ACCESS_READ_WRITE	0x02
 #define GDT_ACCESS_DIRECTION	0x04
