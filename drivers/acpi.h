@@ -3,11 +3,12 @@
 
 #include "pit.h"
 
-#define ACPI_EXTENDED_BIOS_DATA_AREA_BEGIN						0xe0000
+#define ACPI_EXTENDED_BIOS_DATA_AREA_POINTER_ADDRESS			0x40e
 #define ACPI_EXTENDED_BIOS_DATA_AREA_END						0x100000
 
 #define ACPI_SIGNATURE_ROOT_SYSTEM_DESCRIPTION_POINTER			0x2052545020445352		//	`RSD PTR `
 #define ACPI_SIGNATURE_ROOT_SYSTEM_DESCRIPTION_TABLE			0x54445352				//	`RSDT`
+#define ACPI_SIGNATURE_EXTENDED_SYSTEM_DESCRIPTION_TABLE		0x54445358				//	`XSDT`
 #define ACPI_SIGNATURE_FIXED_ACPI_DESCRIPTION_TABLE				0x50434146				//	`FACP`
 #define ACPI_SIGNATURE_DIFFERENTIATED_SYSTEM_DESCRIPTION_TABLE	0x54445344				//	`DSDT`
 
@@ -107,7 +108,8 @@ class AdvancedPowerAndConfigurationInterface {
 	static bool Initialize();
 	static bool Shutdown();
 	static PRootSystemDescriptionPointer_t FindRootSystemDescriptionPointer();
-	static PSystemDescriptionHeader_t FindSystemDescriptionTable(PRootSystemDescriptionPointer_t rootSystemDescriptionPointer, dword_t signature);
+	static PSystemDescriptionHeader_t FindRootSystemDescriptionTable(PRootSystemDescriptionPointer_t rootSystemDescriptionPointer);
+	static PSystemDescriptionHeader_t FindSystemDescriptionTable(PSystemDescriptionHeader_t rootSystemDescriptionTable, dword_t signature);
 	static bool SystemDescriptionHeaderValid(PSystemDescriptionHeader_t systemDescriptionHeader);
 	private:
 	static dword_t m_smiCommandPort;

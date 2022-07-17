@@ -17,7 +17,7 @@ all:
 	$(MAKE) run
 	$(MAKE) clean
 
-build:
+build:							# make build target=i686
 	$(MAKE) $(asm-objects)
 	$(MAKE) $(cpp-objects)
 	$(MAKE) kernel

@@ -12,9 +12,10 @@ word_t AdvancedPowerAndConfigurationInterface::m_sciEn;
 byte_t AdvancedPowerAndConfigurationInterface::m_pm1ControlLength;
 
 bool AdvancedPowerAndConfigurationInterface::Initialize() {
-	PRootSystemDescriptionPointer_t pointer = AdvancedPowerAndConfigurationInterface::FindRootSystemDescriptionPointer();
+	PRootSystemDescriptionPointer_t rootSystemDescriptionPointer = FindRootSystemDescriptionPointer();
+	PSystemDescriptionHeader_t rootSystemDescriptionTable = FindRootSystemDescriptionTable(rootSystemDescriptionPointer);
 	PFixedAcpiDescriptionTable_t pFixed = (PFixedAcpiDescriptionTable_t)
-		AdvancedPowerAndConfigurationInterface::FindSystemDescriptionTable(pointer, ACPI_SIGNATURE_FIXED_ACPI_DESCRIPTION_TABLE);
+		AdvancedPowerAndConfigurationInterface::FindSystemDescriptionTable(rootSystemDescriptionTable, ACPI_SIGNATURE_FIXED_ACPI_DESCRIPTION_TABLE);
 	pbyte_t pDifferentiated;
 	size_t length;
 
@@ -30,6 +31,7 @@ bool AdvancedPowerAndConfigurationInterface::Initialize() {
 		length = (*(pdword_t)(pFixed->ExtendedDifferentiatedSystemDescriptionTableAddress + 40) - sizeof(SystemDescriptionHeader_t));
 		pDifferentiated = (pbyte_t)(pFixed->ExtendedDifferentiatedSystemDescriptionTableAddress + sizeof(SystemDescriptionHeader_t));
 	}
+
 	if (!pDifferentiated) return false;
 	
 	while (length-- && *((pdword_t)pDifferentiated) != ACPI_SIGNATURE_S5_OBJECT) pDifferentiated++;
@@ -96,12 +98,12 @@ bool AdvancedPowerAndConfigurationInterface::Shutdown() {
 PRootSystemDescriptionPointer_t AdvancedPowerAndConfigurationInterface::FindRootSystemDescriptionPointer() {
 	PRootSystemDescriptionPointer_t pointer;
 	byte_t checksum;
-
-	for (size_t i = ACPI_EXTENDED_BIOS_DATA_AREA_BEGIN; i < ACPI_EXTENDED_BIOS_DATA_AREA_END; i++) {
+	const size_t extendedBiosDataArea = (size_t)(*(pword_t)ACPI_EXTENDED_BIOS_DATA_AREA_POINTER_ADDRESS << 4);
+	for (size_t i = extendedBiosDataArea; i < ACPI_EXTENDED_BIOS_DATA_AREA_END; i++) {
 		if (*((pqword_t)i) == ACPI_SIGNATURE_ROOT_SYSTEM_DESCRIPTION_POINTER) {
 			pointer = (PRootSystemDescriptionPointer_t)i;
 			checksum = 0;
-			for (size_t i = 0; i < pointer->Length; i++) checksum += *((pbyte_t)pointer);
+			for (size_t i = 0; i < pointer->Length; i++) checksum += ((pbyte_t)pointer)[i];
 			if (!checksum) return pointer;
 		}
 	}
@@ -109,33 +111,34 @@ PRootSystemDescriptionPointer_t AdvancedPowerAndConfigurationInterface::FindRoot
 	return nullptr;
 }
 
-PSystemDescriptionHeader_t AdvancedPowerAndConfigurationInterface::FindSystemDescriptionTable(PRootSystemDescriptionPointer_t rootSystemDescriptionPointer, dword_t signature) {
+PSystemDescriptionHeader_t AdvancedPowerAndConfigurationInterface::FindRootSystemDescriptionTable(
+	PRootSystemDescriptionPointer_t rootSystemDescriptionPointer) {
+	if (rootSystemDescriptionPointer->Revision == 0x00)
+		return (PSystemDescriptionHeader_t)rootSystemDescriptionPointer->RootSystemDescriptionTableAddress;
+	else return (PSystemDescriptionHeader_t)(size_t)rootSystemDescriptionPointer->ExtendedSystemDescriptionTableAddress;
+}
+
+PSystemDescriptionHeader_t AdvancedPowerAndConfigurationInterface::FindSystemDescriptionTable(PSystemDescriptionHeader_t rootSystemDescriptionTable, dword_t signature) {
 	PSystemDescriptionHeader_t pointer;
 	size_t count;
+	pqword_t paddress = (pqword_t)((size_t)rootSystemDescriptionTable + sizeof(SystemDescriptionHeader_t));
 
-	if (rootSystemDescriptionPointer->Revision == 0 ||
-		(rootSystemDescriptionPointer->Revision && !rootSystemDescriptionPointer->ExtendedSystemDescriptionTableAddress)) {
-		pointer = (PSystemDescriptionHeader_t)rootSystemDescriptionPointer->RootSystemDescriptionTableAddress;
-		if (pointer->Signature != ACPI_SIGNATURE_ROOT_SYSTEM_DESCRIPTION_TABLE) return nullptr;
-		count = (pointer->Length - sizeof(SystemDescriptionHeader_t)) / sizeof(dword_t);
-
-		pdword_t pAddress = (pdword_t)((size_t)pointer + sizeof(SystemDescriptionHeader_t));
+	if (rootSystemDescriptionTable->Signature == ACPI_SIGNATURE_ROOT_SYSTEM_DESCRIPTION_TABLE) {
+		count = (rootSystemDescriptionTable->Length - sizeof(SystemDescriptionHeader_t)) / sizeof(dword_t);
 		for (size_t i = 0; i < count; i++) {
-			pointer = (PSystemDescriptionHeader_t)*pAddress;
-			if (pointer->Signature == signature && AdvancedPowerAndConfigurationInterface::SystemDescriptionHeaderValid(pointer)) return pointer;
-			pAddress++;
+			pointer = (PSystemDescriptionHeader_t)(size_t)*paddress;
+			if (pointer->Signature == signature &&
+				AdvancedPowerAndConfigurationInterface::SystemDescriptionHeaderValid(pointer)) return pointer;
+			paddress = (pqword_t)((size_t)paddress + sizeof(dword_t));
 		}
 	}
-	else {
-		pointer = (PSystemDescriptionHeader_t)rootSystemDescriptionPointer->ExtendedSystemDescriptionTableAddress;
-		if (pointer->Signature != ACPI_SIGNATURE_ROOT_SYSTEM_DESCRIPTION_TABLE) return nullptr;
-		count = (pointer->Length - sizeof(SystemDescriptionHeader_t)) / sizeof(qword_t);
-
-		pqword_t pAddress = (pqword_t)((size_t)pointer + sizeof(SystemDescriptionHeader_t));
+	else if (rootSystemDescriptionTable->Signature == ACPI_SIGNATURE_EXTENDED_SYSTEM_DESCRIPTION_TABLE) {
+		count = (rootSystemDescriptionTable->Length - sizeof(SystemDescriptionHeader_t)) / sizeof(qword_t);
 		for (size_t i = 0; i < count; i++) {
-			pointer = (PSystemDescriptionHeader_t)*pAddress;
-			if (pointer->Signature == signature && AdvancedPowerAndConfigurationInterface::SystemDescriptionHeaderValid(pointer)) return pointer;
-			pAddress++;
+			pointer = (PSystemDescriptionHeader_t)(size_t)*paddress;
+			if (pointer->Signature == signature &&
+				AdvancedPowerAndConfigurationInterface::SystemDescriptionHeaderValid(pointer)) return pointer;
+			paddress = (pqword_t)((size_t)paddress + sizeof(qword_t));
 		}
 	}
 

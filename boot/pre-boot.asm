@@ -25,8 +25,8 @@ _main:
 	mov bx, 0x0000
 	int 0x10
 
-	mov ax, 0x0103			;	disable cursor
-	mov cx, 0x0706
+	mov ah, 0x01			;	disable cursor
+	mov ch, 0x3f
 	int 0x10
 
 	mov ax, 0x0200 + ((_main_boot_end - _main_boot_start + 511) & ~511) / 512
