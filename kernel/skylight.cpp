@@ -13,9 +13,11 @@ extern "C" void SkylightEntry(
 ) {
 	Terminal::PrintFormat("Loading GDT...\t");
 	GlobalDescriptorTableManager::Select(gdt, sizeof(gdt)/sizeof(gdt[0]));
-	GlobalDescriptorTableManager::SetEntry(0, 0, 0, 0, 0);
-	GlobalDescriptorTableManager::SetEntry(1, 0xffff, 0, 0x9a, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
-	GlobalDescriptorTableManager::SetEntry(2, 0xffff, 0, 0x92, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
+	GlobalDescriptorTableManager::SetEntry(0, 0, 0, 0, 0);						//	null descriptor
+	GlobalDescriptorTableManager::SetEntry(1, 0xffff, 0, GDT_ACCESS_READ_WRITE | GDT_ACCESS_EXECUTABLE | GDT_ACCESS_SYSTEM | GDT_ACCESS_PRESENT, 
+		GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);						//	code
+	GlobalDescriptorTableManager::SetEntry(2, 0xffff, 0, GDT_ACCESS_READ_WRITE | GDT_ACCESS_SYSTEM | GDT_ACCESS_PRESENT,
+		GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);						//	data
 	GlobalDescriptorTableManager::Load();
 
 	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nLoading IDT, exception handlers...\t",	TERMINAL_COLOR_LIME);
