@@ -7,7 +7,7 @@ Protected mode os, written in C++
     -   [X] Functions to print char, string
     -   [X] Escape sequences support (`\r\n\t\v\b`)
     -   [X] Formatted & colored print (`%eb` - start colored text, `%ee` - stop)
-    -   [X] Numbers supprot (`\b\o\d\x\X`)
+    -   [X] Numbers support (`\b\o\d\x\X`)
 -   [X] Input & output through ports
 -   [X] Global Descriptor Table Manager
 -   [X] Programmable Interrupt Controller
