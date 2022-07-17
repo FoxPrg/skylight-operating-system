@@ -10,6 +10,8 @@ word_t AdvancedPowerAndConfigurationInterface::m_slpTypB;
 word_t AdvancedPowerAndConfigurationInterface::m_slpEn;
 word_t AdvancedPowerAndConfigurationInterface::m_sciEn;
 byte_t AdvancedPowerAndConfigurationInterface::m_pm1ControlLength;
+/* word_t AdvancedPowerAndConfigurationInterface::m_resetPort;
+byte_t AdvancedPowerAndConfigurationInterface::m_resetValue; */
 
 bool AdvancedPowerAndConfigurationInterface::Initialize() {
 	PRootSystemDescriptionPointer_t rootSystemDescriptionPointer = FindRootSystemDescriptionPointer();
@@ -18,6 +20,9 @@ bool AdvancedPowerAndConfigurationInterface::Initialize() {
 		AdvancedPowerAndConfigurationInterface::FindSystemDescriptionTable(rootSystemDescriptionTable, ACPI_SIGNATURE_FIXED_ACPI_DESCRIPTION_TABLE);
 	pbyte_t pDifferentiated;
 	size_t length;
+
+	/* m_resetPort = (size_t)pFixed->ResetReg.Address;
+	m_resetValue = pFixed->ResetValue; */
 
 	if (pFixed->DifferentiatedSystemDescriptionTableAddress) {
 		if (*((pdword_t)pFixed->DifferentiatedSystemDescriptionTableAddress) != ACPI_SIGNATURE_DIFFERENTIATED_SYSTEM_DESCRIPTION_TABLE)
@@ -94,6 +99,14 @@ bool AdvancedPowerAndConfigurationInterface::Shutdown() {
 
 	return true;
 }
+
+/* bool AdvancedPowerAndConfigurationInterface::Reboot() {
+	if (!m_sciEn) return false;
+
+	InputOutputManager::WriteByte(m_resetPort, m_resetValue);
+
+	return true;
+} */
 
 PRootSystemDescriptionPointer_t AdvancedPowerAndConfigurationInterface::FindRootSystemDescriptionPointer() {
 	PRootSystemDescriptionPointer_t pointer;

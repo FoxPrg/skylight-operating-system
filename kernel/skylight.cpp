@@ -51,6 +51,6 @@ extern "C" void SkylightEntry(
 
 	DeclareAssembly("jmp .");
 
-	Terminal::PrintFormat("Actions completed. Shutdown...\r\n");
+	Terminal::PrintFormat("Actions completed. Shutting down...\r\n");
 	AdvancedPowerAndConfigurationInterface::Shutdown();
 }

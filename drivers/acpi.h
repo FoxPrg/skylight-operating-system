@@ -107,6 +107,7 @@ class AdvancedPowerAndConfigurationInterface {
 	public:
 	static bool Initialize();
 	static bool Shutdown();
+	// static bool Reboot();	Not implemented yet
 	static PRootSystemDescriptionPointer_t FindRootSystemDescriptionPointer();
 	static PSystemDescriptionHeader_t FindRootSystemDescriptionTable(PRootSystemDescriptionPointer_t rootSystemDescriptionPointer);
 	static PSystemDescriptionHeader_t FindSystemDescriptionTable(PSystemDescriptionHeader_t rootSystemDescriptionTable, dword_t signature);
@@ -122,6 +123,8 @@ class AdvancedPowerAndConfigurationInterface {
 	static word_t m_slpEn;
 	static word_t m_sciEn;
 	static byte_t m_pm1ControlLength;
+	/* static word_t m_resetPort;
+	static byte_t m_resetValue; */
 };
 
 #endif
