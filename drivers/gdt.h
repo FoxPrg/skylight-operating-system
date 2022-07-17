@@ -17,35 +17,36 @@
 #define GDT_FLAG_GRANULARITY	0x08
 
 typedef struct DeclareAttribute(packed) {
-	WORD	Size;
-	DWORD	Offset;
-} GLOBAL_DESCRIPTOR_TABLE_REGISTER, *PGLOBAL_DESCRIPTOR_TABLE_REGISTER;
+	word_t	Size;
+	dword_t	Offset;
+} GlobalDescriptorTableRegister_t, *PGlobalDescriptorTableRegister_t;
 
 typedef struct DeclareAttribute(packed) {
-	WORD	LimitLow;
-	DWORD32	BaseLow		:24;
-	BYTE	Access;
-	BYTE	LimitHigh	:4;
-	BYTE	Flags		:4;
-	BYTE	BaseHigh;
-} GLOBAL_DESCRIPTOR_TABLE_ENTRY, *PGLOBAL_DESCRIPTOR_TABLE_ENTRY;
+	word_t	LimitLow;
+	dword_t	BaseLow		:24;
+	byte_t	Access;
+	byte_t	LimitHigh	:4;
+	byte_t	Flags		:4;
+	byte_t	BaseHigh;
+} GlobalDescriptorTableEntry_t, *PGlobalDescriptorTableEntry_t;
 
-VOID InitializeGdtEntry(
-	PGLOBAL_DESCRIPTOR_TABLE_ENTRY pEntry,
-	DWORD32 dwLimit,
-	DWORD32 dwBase,
-	BYTE bAccess,
-	BYTE bFlags
+extern GlobalDescriptorTableRegister_t gdtSelectedRegister;
+extern PGlobalDescriptorTableEntry_t gdtSelectedTable;
+extern size_t gdtSelectedLength;
+
+void SelectGdt(
+	PGlobalDescriptorTableEntry_t pGlobalDescriptorTableEntry,
+	size_t length
 );
 
-VOID InitializeGdtRegister(
-	PGLOBAL_DESCRIPTOR_TABLE_REGISTER pRegister,
-	PGLOBAL_DESCRIPTOR_TABLE_ENTRY pTable,
-	SIZE_T szLength
+void InitializeGdtEntry(
+	size_t index,
+	dword_t limit,
+	dword_t base,
+	byte_t access,
+	byte_t flags
 );
 
-VOID LoadGdtRegister(
-	PGLOBAL_DESCRIPTOR_TABLE_REGISTER pRegister
-);
+#define LoadGdt()	DeclareAssembly("lgdt %0"::"m"(gdtSelectedRegister))
 
 #endif

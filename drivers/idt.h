@@ -14,33 +14,57 @@
 #define IDT_FLAG_PRESENT		0x80
 
 typedef struct DeclareAttribute(packed) {
-	WORD	Size;
-	DWORD	Offset;
-} INTERRUPT_DESCRIPTOR_TABLE_REGISTER, *PINTERRUPT_DESCRIPTOR_TABLE_REGISTER;
+	word_t	Size;
+	dword_t	Offset;
+} InterruptDescriptorTableRegister_t, *PInterruptDescriptorTableRegister_t;
 
 typedef struct DeclareAttribute(packed) {
-	WORD	OffsetLow;
-	WORD	SegmentSelector;
-	BYTE	Reserved;
-	BYTE	Flags;
-	WORD	OffsetHigh;
-} INTERRUPT_DESCRIPTOR_TABLE_ENTRY, *PINTERRUPT_DESCRIPTOR_TABLE_ENTRY;
+	word_t	OffsetLow;
+	word_t	SegmentSelector;
+	byte_t	Reserved;
+	byte_t	Flags;
+	word_t	OffsetHigh;
+} InterruptDescriptorTableEntry_t, *PInterruptDescriptorTableEntry_t;
 
-VOID InitializeIdtEntry(
-	PINTERRUPT_DESCRIPTOR_TABLE_ENTRY pEntry,
-	SIZE_T szOffset,
-	WORD wSegSel,
-	BYTE bFlags
+typedef struct DeclareAttribute(packed) {
+	dword_t	GSegment;
+	dword_t	FSegment;
+	dword_t	ExtendedSegment;
+	dword_t	DataSegment;
+	dword_t	DestinationIndex;
+	dword_t	SourceIndex;
+	dword_t	BasePointer;
+	dword_t	StackPointer;			//	Read-only!
+	dword_t	BaseRegister;
+	dword_t	DataRegister;
+	dword_t	CountRegister;
+	dword_t	AccumulatorRegister;
+	dword_t	InterruptIndex;
+	dword_t	ErrorCode;
+	dword_t	InstructionPointer;
+	dword_t	CodeSegment;
+	dword_t	FlagsRegister;
+	dword_t	UserStackPointer;
+	dword_t	UserStackSelector;
+} InterruptHandlerRegisters_t, *PInterruptHandlerRegisters_t;
+typedef void (*InterruptHandler_t)(PInterruptHandlerRegisters_t);
+
+extern InterruptDescriptorTableRegister_t idtSelectedRegister;
+extern PInterruptDescriptorTableEntry_t idtSelectedTable;
+extern size_t idtSelectedLength;
+
+void SelectIdt(
+	PInterruptDescriptorTableEntry_t pInterruptDescriptorTable,
+	size_t length
 );
 
-VOID InitializeIdtRegister(
-	PINTERRUPT_DESCRIPTOR_TABLE_REGISTER pRegister,
-	PINTERRUPT_DESCRIPTOR_TABLE_ENTRY pTable,
-	SIZE_T szLength
+void InitializeIdtEntry(
+	size_t index,
+	void (*dispatcher)(),
+	word_t segmentSelector,
+	byte_t flags
 );
 
-VOID LoadIdtRegister(
-	PINTERRUPT_DESCRIPTOR_TABLE_REGISTER pRegister
-);
+#define LoadIdt()	DeclareAssembly("lidt %0"::"m"(idtSelectedRegister))
 
 #endif

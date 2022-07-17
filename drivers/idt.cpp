@@ -1,29 +1,28 @@
 #include "idt.h"
 
-VOID InitializeIdtEntry(
-	PINTERRUPT_DESCRIPTOR_TABLE_ENTRY pEntry,
-	SIZE_T szOffset,
-	WORD wSegSel,
-	BYTE bFlags
+InterruptDescriptorTableRegister_t idtSelectedRegister;
+PInterruptDescriptorTableEntry_t idtSelectedTable;
+size_t idtSelectedLength;
+
+void SelectIdt(
+	PInterruptDescriptorTableEntry_t pInterruptDescriptorTable,
+	size_t length
 ) {
-	pEntry->OffsetLow = (WORD)((SIZE_T)szOffset & 0xffff);
-	pEntry->SegmentSelector = wSegSel;
-	pEntry->Reserved = 0;
-	pEntry->Flags = bFlags;
-	pEntry->OffsetHigh = (WORD)(((SIZE_T)szOffset >> 16) & 0xffff);
+	idtSelectedRegister.Offset = (size_t)pInterruptDescriptorTable;
+	idtSelectedRegister.Size = length * sizeof(InterruptDescriptorTableEntry_t) - 1;
+	idtSelectedTable = pInterruptDescriptorTable;
+	idtSelectedLength = length;
 }
 
-VOID InitializeIdtRegister(
-	PINTERRUPT_DESCRIPTOR_TABLE_REGISTER pRegister,
-	PINTERRUPT_DESCRIPTOR_TABLE_ENTRY pTable,
-	SIZE_T szLength
+void InitializeIdtEntry(
+	size_t index,
+	void (*dispatcher)(),
+	word_t segmentSelector,
+	byte_t flags
 ) {
-	pRegister->Size = sizeof(INTERRUPT_DESCRIPTOR_TABLE_ENTRY) * szLength - 1;
-	pRegister->Offset = (DWORD)pTable;
-}
-
-VOID LoadIdtRegister(
-	PINTERRUPT_DESCRIPTOR_TABLE_REGISTER pRegister
-) {
-	DeclareAssembly("lidt %0"::"m"(*pRegister));
+	idtSelectedTable[index].OffsetLow = (word_t)((size_t)dispatcher & 0xffff);
+	idtSelectedTable[index].SegmentSelector = segmentSelector;
+	idtSelectedTable[index].Reserved = 0;
+	idtSelectedTable[index].Flags = flags;
+	idtSelectedTable[index].OffsetHigh = (word_t)(((size_t)dispatcher >> 16) & 0xffff);
 }

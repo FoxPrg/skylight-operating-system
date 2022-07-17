@@ -2,6 +2,7 @@
 #define TTY_H
 
 #include "memory.h"
+#include "string.h"
 
 #define TTY_BUFFER_ADDRESS		0xb8000
 #define TTY_WIDTH				80
@@ -27,23 +28,23 @@
 #define TTY_COLOR_YELLOW		14
 #define TTY_COLOR_WHITE			15
 
-extern WORD ttyCursorPosition;
-extern BYTE ttySelectedColor;
-extern PBYTE ttyBuffer;
+extern word_t ttyCursorPosition;
+extern byte_t ttySelectedColor;
+extern pbyte_t ttyBuffer;
 
-VOID TtySelectColor(
-	BYTE bColor
+void TtySelectColor(
+	byte_t bColor
 );
 
-VOID TtyPutChar(
-	const CHAR ccCharacter
+void TtyPutChar(
+	const char ccCharacter
 );
 
-VOID TtyPutString(
+void TtyPutString(
 	const char* cpString
 );
 
-VOID TtyPrintFormat(
+void TtyPrintFormat(
 	const char* cpFormat,
 	...
 );

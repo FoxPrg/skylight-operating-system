@@ -8,7 +8,7 @@ This program is built by Equation Solution <http://www.Equation.com>.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jul 16 17:02:37 2022
+# Make data base, printed on Sun Jul 17 11:23:37 2022
 
 # Variables
 
@@ -35,7 +35,7 @@ MAKE_COMMAND := make.exe
 # automatic
 @D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
 # environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_1296_YLDAJXQGZREFNJUF
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_9660_NYJGZLOSMUZHNLNW
 # environment
 FPS_BROWSER_USER_PROFILE_STRING = Default
 # environment
@@ -61,7 +61,7 @@ MAKEFLAGS = pqrR
 # makefile
 CURDIR := c:/Users/���/Documents/Data/skylight-operating-system
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 *D = $(patsubst %/,%,$(patsubst %\,%,$(dir $*)))
 # environment
@@ -79,7 +79,7 @@ MAKEFILE_LIST :=
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 1296
+VSCODE_PID = 9660
 # automatic
 ?D = $(patsubst %/,%,$(patsubst %\,%,$(dir $?)))
 # automatic
@@ -87,7 +87,7 @@ VSCODE_PID = 1296
 # automatic
 <D = $(patsubst %/,%,$(patsubst %\,%,$(dir $<)))
 # environment
-VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePackId":"0c710195abefcb157427091a54303bfc.ru","_translationsConfigFile":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\0c710195abefcb157427091a54303bfc.ru\\tcf.json","_cacheRoot":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\0c710195abefcb157427091a54303bfc.ru","_resolvedLanguagePackCoreLocation":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\0c710195abefcb157427091a54303bfc.ru\\92d25e35d9bf1a6b16f7d0758f25d48ace11e5b9","_corruptedFile":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\0c710195abefcb157427091a54303bfc.ru\\corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePackId":"f1271d778ec77496b280bb178e5ed275.ru","_translationsConfigFile":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\f1271d778ec77496b280bb178e5ed275.ru\\tcf.json","_cacheRoot":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\f1271d778ec77496b280bb178e5ed275.ru","_resolvedLanguagePackCoreLocation":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\f1271d778ec77496b280bb178e5ed275.ru\\92d25e35d9bf1a6b16f7d0758f25d48ace11e5b9","_corruptedFile":"C:\\Users\\���\\AppData\\Roaming\\Code\\clp\\f1271d778ec77496b280bb178e5ed275.ru\\corrupted.info","_languagePackSupport":true}
 # default
 MAKE_HOST := x86_64-w64-mingw32
 # environment
@@ -236,8 +236,7 @@ makefile.mak:
 
 # Not a target:
 GNUmakefile:
-#  Implicit r 
-ule search has been done.
+#  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
 #  Failed to be updated.
@@ -256,6 +255,6 @@ ule search has been done.
 # strcache performance: lookups = 19 / hit rate = 15%
 # hash-table stats:
 # Load=16/8192=0%, Rehash=0, Collisions=1/19=5%
-# Finished Make data base on Sat Jul 16 17:02:37 2022
+# Finished Make data base on Sun Jul 17 11:23:37 2022
 
  

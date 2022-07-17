@@ -3,16 +3,16 @@
 
 #include "typedefs.h"
 
-VOID MemoryCopy(
-	PVOID pvDestination,
-	const PVOID cpvSource,
-	SIZE_T szCount
+void MemoryCopy(
+	void* pvDestination,
+	const void* cpvSource,
+	size_t szCount
 );
 
-VOID MemorySet(
-	PVOID pvDestination,
-	const BYTE cbValue,
-	SIZE_T szCount
+void MemorySet(
+	void* pvDestination,
+	const byte_t cbValue,
+	size_t szCount
 );
 
 #endif

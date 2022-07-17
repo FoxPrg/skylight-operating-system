@@ -6,18 +6,15 @@
 #define AlignUp(__value, __alignment)	(((__value) + (__alignment) - 1) & ~((__alignment) - 1))
 #define AlignDown(__value, __alignment)	((__value) & ~((__alignment) - 1))
 
-typedef char CHAR, INT8, *PCHAR, *PINT8;
-typedef unsigned char UCHAR, UINT8, BYTE, *PUCHAR, *PUINT8, *PBYTE;
-typedef short SHORT, INT16, *PSHORT, *PINT16;
-typedef unsigned short USHORT, UINT16, WORD, *PUSHORT, *PUINT16, *PWORD;
-typedef int INT, INT32, *PINT, *PINT32;
-typedef unsigned int UINT, UINT32, DWORD32, *PUINT, *PUINT32, *PDWORD32;
-typedef long long LONGLONG, INT64, *PLONGLONG, *PINT64;
-typedef unsigned long long ULONGLONG, UINT64, DWORD64, QWORD, *PULONGLONG, *PUINT64, *PDWORD64, *PQWORD;
-typedef long int LONG, ARCH_T, *PLONG, *PARCH_T;
-typedef long unsigned int ULONG, DWORD, SIZE_T, *PULONG, *PDWORD, *PSIZE_T;
-typedef void VOID, *PVOID;
-
-#define EXTERN_C	extern "C"
+typedef char int8_t, *pint8_t;
+typedef unsigned char uint8_t, byte_t, *puint8_t, *pbyte_t;
+typedef short int16_t, *pint16_t;
+typedef unsigned short uint16_t, word_t, *puint16_t, *pword_t;
+typedef int int32_t, *pint32_t;
+typedef unsigned int uint32_t, dword_t, *puint32_t, *pdword_t;
+typedef long long int64_t, *pint64_t;
+typedef unsigned long long uint64_t, qword_t, *puint64_t, *pqword_t;
+typedef long int decimal_t, *pdecimal_t;
+typedef long unsigned int size_t, *psize_t;
 
 #endif

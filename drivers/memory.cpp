@@ -1,17 +1,17 @@
 #include "memory.h"
 
-VOID MemoryCopy(
-	PVOID pvDestination,
-	const PVOID cpvSource,
-	SIZE_T szCount
+void MemoryCopy(
+	void* pvDestination,
+	const void* cpvSource,
+	size_t szCount
 ) {
-	for (SIZE_T i = 0; i < szCount; i++) ((PBYTE)pvDestination)[i] = ((PBYTE)cpvSource)[i];
+	for (size_t i = 0; i < szCount; i++) ((pbyte_t)pvDestination)[i] = ((pbyte_t)cpvSource)[i];
 }
 
-VOID MemorySet(
-	PVOID pvDestination,
-	const BYTE cbValue,
-	SIZE_T szCount
+void MemorySet(
+	void* pvDestination,
+	const byte_t cbValue,
+	size_t szCount
 ) {
-	for (SIZE_T i = 0; i < szCount; i++) ((PBYTE)pvDestination)[i] = cbValue;
+	for (size_t i = 0; i < szCount; i++) ((pbyte_t)pvDestination)[i] = cbValue;
 }

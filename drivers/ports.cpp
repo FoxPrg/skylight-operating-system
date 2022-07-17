@@ -1,46 +1,46 @@
 #include "ports.h"
 
-VOID PortsWriteByte(
-	WORD wPort,
-	BYTE bValue
+void PortsWriteByte(
+	word_t wPort,
+	byte_t bValue
 ) {
 	DeclareAssembly("out %0, %1"::"a"(bValue), "d"(wPort));
 }
 
-VOID PortsWriteWord(
-	WORD wPort,
-	WORD wValue
+void PortsWriteWord(
+	word_t wPort,
+	word_t wValue
 ) {
 	DeclareAssembly("out %0, %1"::"a"(wValue), "d"(wPort));
 }
 
-VOID PortsWriteDword(
-	WORD wPort,
-	DWORD dwValue
+void PortsWriteDword(
+	word_t wPort,
+	dword_t dwValue
 ) {
 	DeclareAssembly("out %0, %1"::"a"(dwValue), "d"(wPort));
 }
 
-BYTE PortsReadByte(
-	WORD wPort
+byte_t PortsReadByte(
+	word_t wPort
 ) {
-	BYTE bValue;
+	byte_t bValue;
 	DeclareAssembly("in %1, %0":"=r"(bValue):"d"(wPort));
 	return bValue;
 }
 
-WORD PortsReadWord(
-	WORD wPort
+word_t PortsReadWord(
+	word_t wPort
 ) {
-	WORD wValue;
+	word_t wValue;
 	DeclareAssembly("in %1, %0":"=r"(wValue):"d"(wPort));
 	return wValue;
 }
 
-DWORD PortsReadDword(
-	WORD wPort
+dword_t PortsReadDword(
+	word_t wPort
 ) {
-	DWORD dwValue;
+	dword_t dwValue;
 	DeclareAssembly("in %1, %0":"=r"(dwValue):"d"(wPort));
 	return dwValue;
 }

@@ -3,31 +3,31 @@
 
 #include "typedefs.h"
 
-VOID PortsWriteByte(
-	WORD wPort,
-	BYTE bValue
+void PortsWriteByte(
+	word_t wPort,
+	byte_t bValue
 );
 
-VOID PortsWriteWord(
-	WORD wPort,
-	WORD wValue
+void PortsWriteWord(
+	word_t wPort,
+	word_t wValue
 );
 
-VOID PortsWriteDword(
-	WORD wPort,
-	DWORD dwValue
+void PortsWriteDword(
+	word_t wPort,
+	dword_t dwValue
 );
 
-BYTE PortsReadByte(
-	WORD wPort
+byte_t PortsReadByte(
+	word_t wPort
 );
 
-WORD PortsReadWord(
-	WORD wPort
+word_t PortsReadWord(
+	word_t wPort
 );
 
-DWORD PortsReadDword(
-	WORD wPort
+dword_t PortsReadDword(
+	word_t wPort
 );
 
 #endif

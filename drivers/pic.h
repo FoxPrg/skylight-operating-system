@@ -19,21 +19,21 @@
 #define PIC_COMMAND_MASTER_SLAVE_AT_IRQ_2	0x04
 #define PIC_COMMAND_SLAVE_CASCADE_IDENTITY	0x02
 
-VOID PicRemapVectors(
-	BYTE bMaster,
-	BYTE bSlave
+void PicRemapVectors(
+	byte_t bMaster,
+	byte_t bSlave
 );
 
-VOID PicMask(
-	BYTE bRoutine
+void PicMask(
+	byte_t bRoutine
 );
 
-VOID PicUnmask(
-	BYTE bRoutine
+void PicUnmask(
+	byte_t bRoutine
 );
 
-VOID PicSendEndOfInterrupt(
-	BYTE bRoutine
+void PicSendEndOfInterrupt(
+	byte_t bRoutine
 );
 
 #define PicMaskAll()	PortsWriteByte(PIC_PORT_MASTER_DATA, 0xff); PortsWriteByte(PIC_PORT_SLAVE_DATA, 0xff);
