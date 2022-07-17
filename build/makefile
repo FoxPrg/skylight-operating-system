@@ -37,4 +37,4 @@ run:
 	$(emu) $(run-flags)
 
 clean:
-	rm -rf ../**/*.bin  ./**/*.bin *.bin $(cpp-objects) $(asm-objects) 
+	rm -rf dbg.txt ../**/*.bin  ./**/*.bin *.bin $(cpp-objects) $(asm-objects) 
