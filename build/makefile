@@ -13,12 +13,15 @@ link-flags=-m32 -ffreestanding -O0 -nostdlib -T link.ld -march=$(target)
 run-flags=-drive format=raw,file=bin/$(out) -m 2G -monitor stdio -d cpu_reset -D dbg.txt
 
 all:
+	$(MAKE) build
+	$(MAKE) run
+	$(MAKE) clean
+
+build:
 	$(MAKE) $(asm-objects)
 	$(MAKE) $(cpp-objects)
 	$(MAKE) kernel
 	$(MAKE) boot
-	$(MAKE) run
-	$(MAKE) clean
 
 %-cpp.o:	%.cpp
 	$(cpp) -c $< $(compile-flags) -o $@

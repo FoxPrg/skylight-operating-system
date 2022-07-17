@@ -1,7 +1,7 @@
 #ifndef PIC_H
 #define PIC_H
 
-#include "ports.h"
+#include "io.h"
 
 #define PIC_PORT_MASTER_COMMAND				0x20
 #define PIC_PORT_MASTER_DATA				0x21
@@ -19,24 +19,14 @@
 #define PIC_COMMAND_MASTER_SLAVE_AT_IRQ_2	0x04
 #define PIC_COMMAND_SLAVE_CASCADE_IDENTITY	0x02
 
-void PicRemapVectors(
-	byte_t bMaster,
-	byte_t bSlave
-);
-
-void PicMask(
-	byte_t bRoutine
-);
-
-void PicUnmask(
-	byte_t bRoutine
-);
-
-void PicSendEndOfInterrupt(
-	byte_t bRoutine
-);
-
-#define PicMaskAll()	PortsWriteByte(PIC_PORT_MASTER_DATA, 0xff); PortsWriteByte(PIC_PORT_SLAVE_DATA, 0xff);
-#define PicUnmaskAll()	PortsWriteByte(PIC_PORT_MASTER_DATA, 0); PortsWriteByte(PIC_PORT_SLAVE_DATA, 0);
+class ProgrammableInterruptController {
+	public:
+	static void Remap(byte_t masterOffset, byte_t slaveOffset);
+	static void Mask(byte_t routine);
+	static void Unmask(byte_t routine);
+	static void EndOfInterrupt(byte_t routine);
+	static void MaskAll();
+	static void UnmaskAll();
+};
 
 #endif

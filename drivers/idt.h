@@ -49,22 +49,15 @@ typedef struct DeclareAttribute(packed) {
 } InterruptHandlerRegisters_t, *PInterruptHandlerRegisters_t;
 typedef void (*InterruptHandler_t)(PInterruptHandlerRegisters_t);
 
-extern InterruptDescriptorTableRegister_t idtSelectedRegister;
-extern PInterruptDescriptorTableEntry_t idtSelectedTable;
-extern size_t idtSelectedLength;
-
-void SelectIdt(
-	PInterruptDescriptorTableEntry_t pInterruptDescriptorTable,
-	size_t length
-);
-
-void InitializeIdtEntry(
-	size_t index,
-	void (*dispatcher)(),
-	word_t segmentSelector,
-	byte_t flags
-);
-
-#define LoadIdt()	DeclareAssembly("lidt %0"::"m"(idtSelectedRegister))
+class InterruptDescriptorTableManager {
+	public:
+	static void Select(PInterruptDescriptorTableEntry_t table, size_t length);
+	static void SetEntry(size_t index, void (*dispatcher)(), word_t segmentSelector, byte_t flags);
+	static void Load();
+	private:
+	static InterruptDescriptorTableRegister_t m_register;
+	static PInterruptDescriptorTableEntry_t m_table;
+	static size_t m_length;
+};
 
 #endif

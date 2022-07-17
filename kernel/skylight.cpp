@@ -6,36 +6,51 @@ GlobalDescriptorTableRegister_t gdtRegister;
 InterruptDescriptorTableEntry_t idt[256];
 InterruptDescriptorTableRegister_t idtRegister;
 
-extern "C" void SkylightEntry() {
-	TtyPrintFormat("Loading GDT...\t", TTY_COLOR_YELLOW);
-	SelectGdt(gdt, sizeof(gdt)/sizeof(gdt[0]));
-	InitializeGdtEntry(0, 0, 0, 0, 0);
-	InitializeGdtEntry(1, 0xffff, 0, 0x9a, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
-	InitializeGdtEntry(2, 0xffff, 0, 0x92, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
-	LoadGdt();
+extern "C" void SkylightEntry(
+	PMemoryDescriptor_t table,
+	size_t length,
+	size_t descriptorSize
+) {
+	Terminal::PrintFormat("Loading GDT...\t");
+	GlobalDescriptorTableManager::Select(gdt, sizeof(gdt)/sizeof(gdt[0]));
+	GlobalDescriptorTableManager::SetEntry(0, 0, 0, 0, 0);
+	GlobalDescriptorTableManager::SetEntry(1, 0xffff, 0, 0x9a, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
+	GlobalDescriptorTableManager::SetEntry(2, 0xffff, 0, 0x92, GDT_FLAG_PROTECTED_MODE | GDT_FLAG_GRANULARITY);
+	GlobalDescriptorTableManager::Load();
 
-	TtyPrintFormat("[%ebSUCCESS%ee]\r\n\tSize: 0x%X  Offset: 0x%X\r\nLoading IDT, exception handlers...\t",	
-		TTY_COLOR_LIME, gdtSelectedRegister.Size + 1, gdtSelectedRegister.Offset);
-	SelectIdt(idt, sizeof(idt)/sizeof(idt[0]));
-	LoadIdt();
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nLoading IDT, exception handlers...\t",	TERMINAL_COLOR_LIME);
+	InterruptDescriptorTableManager::Select(idt, sizeof(idt)/sizeof(idt[0]));
+	InterruptDescriptorTableManager::Load();
 
-	TtyPrintFormat("[%ebSUCCESS%ee]\r\n\tSize: 0x%X  Offset: 0x%X\r\nLoading exception handlers...\t",
-		TTY_COLOR_LIME, idtSelectedRegister.Size + 1, idtSelectedRegister.Offset);
-	InitializeExceptions(KERNEL_CODE_SEGMENT);
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nLoading exception handlers...\t", TERMINAL_COLOR_LIME);
+	ExceptionsManager::Initialize(KERNEL_CODE_SEGMENT);
 
-	TtyPrintFormat("[%ebSUCCESS%ee]\r\nMasking & remapping & loading hardware interrupts...\t", TTY_COLOR_LIME);
-	InitializeHardwareInterrupts(KERNEL_CODE_SEGMENT);
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nMasking & remapping & loading hardware interrupts...\t", TERMINAL_COLOR_LIME);
+	HardwareInterruptsManager::Initialize(KERNEL_CODE_SEGMENT);
 
-	TtyPrintFormat("[%ebSUCCESS%ee]\r\nInitializing PIT...\t", TTY_COLOR_LIME);
-	PitInitialize();
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nInitializing PIT...\t", TERMINAL_COLOR_LIME);
+	ProgrammableIntervalTimer::Initialize();
 
-	TtyPrintFormat("[%ebSUCCESS%ee]\r\nParsing ACPI tables...\t", TTY_COLOR_LIME);
-	if (!AcpiInitialize()) {
-		TtyPrintFormat("[%ebFAILED%ee]\r\n", TTY_COLOR_RED);
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nParsing ACPI tables...\t", TERMINAL_COLOR_LIME);
+	if (!AdvancedPowerAndConfigurationInterface::Initialize()) {
+		Terminal::PrintFormat("[%ebFAILED%ee]\r\n", TERMINAL_COLOR_RED);
 		DeclareAssembly("jmp .");
 	}
 	
-	TtyPrintFormat("[%ebSUCCESS%ee]\r\n\tSMI command port: 0x%X\r\n", TTY_COLOR_LIME, acpiSmiCommandPort);
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nInitializing MDT...\t", TERMINAL_COLOR_LIME);
+
+	Memory::Select(table, descriptorSize, length);
+	Memory::Exclude(IVT_BEGIN, IVT_LENGTH);
+	Memory::Exclude(BDA_BEGIN, BDA_LENGTH);
+	Memory::Exclude(KERNEL_BEGIN, KERNEL_LENGTH);
+	Memory::Exclude((size_t)table, (length + 2) * descriptorSize);
+	Memory::Exclude(EBDA_BEGIN, EBDA_LENGTH);
+	Memory::Exclude(ISA_HOLE_BEGIN, ISA_HOLE_LENGTH);
+
+	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\n", TERMINAL_COLOR_LIME);
 
 	DeclareAssembly("jmp .");
+
+	Terminal::PrintFormat("Actions completed. Shutdown...\r\n");
+	AdvancedPowerAndConfigurationInterface::Shutdown();
 }

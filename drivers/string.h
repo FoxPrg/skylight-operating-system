@@ -3,16 +3,12 @@
 
 #include "typedefs.h"
 
-void StringFromSigned(
-	decimal_t value,
-	byte_t notation,
-	pint8_t buffer
-);
-
-void StringFromUnsigned(
-	size_t value,
-	byte_t notation,
-	pint8_t buffer
-);
+class String {
+	public:
+	static void FromSigned(decimal_t value, byte_t base, char* buffer);
+	static void FromUnsigned(decimal_t value, byte_t base, char* buffer);
+	private:
+	static char m_conversionBuffer[16];
+};
 
 #endif

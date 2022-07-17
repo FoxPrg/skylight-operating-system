@@ -19,20 +19,14 @@
 
 #define PIT_TICKS_PER_SECOND			1000
 
-extern size_t pitTicksCount;
-
-void PitInitialize();
-
-void PitSetPhase(
-	size_t frequency
-);
-
-void PitSleep(
-	size_t ticks
-);
-
-void PitInterruptHandler(
-	PInterruptHandlerRegisters_t pRegisters
-);
+class ProgrammableIntervalTimer {
+	public:
+	static void Initialize();
+	static void SetFrequency(size_t frequency);
+	static void Sleep(size_t ticksCount);
+	static void Handler(PInterruptHandlerRegisters_t registers);
+	private:
+	static size_t m_ticksCount;
+};
 
 #endif

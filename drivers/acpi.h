@@ -102,25 +102,24 @@ typedef struct DeclareAttribute(packed) : public SystemDescriptionHeader_t {
 	GenericAddressStructure_t	ExtendedGpe1Block;
 } FixedAcpiDescriptionTable_t, *PFixedAcpiDescriptionTable_t;
 
-extern dword_t acpiSmiCommandPort;
-extern byte_t acpiEnableCommand, acpiDisableCommand;
-extern dword_t acpiPm1AControlPort, acpiPm1BControlPort;
-extern word_t acpiSlpTypA, acpiSlpTypB, acpiSlpEn, acpiSciEn;
-extern byte_t acpiPm1ControlLength;
-
-PRootSystemDescriptionPointer_t AcpiFindRootSystemDescriptionPointer();
-
-PSystemDescriptionHeader_t AcpiFindSystemDescriptionTable(
-	PRootSystemDescriptionPointer_t pRootSystemDescriptionPointer,
-	dword_t signature
-);
-
-bool AcpiValidateSystemDescriptionHeader(
-	PSystemDescriptionHeader_t pSystemDescriptionHeader
-);
-
-bool AcpiInitialize();
-
-void AcpiPowerOff();
+class AdvancedPowerAndConfigurationInterface {
+	public:
+	static bool Initialize();
+	static bool Shutdown();
+	static PRootSystemDescriptionPointer_t FindRootSystemDescriptionPointer();
+	static PSystemDescriptionHeader_t FindSystemDescriptionTable(PRootSystemDescriptionPointer_t rootSystemDescriptionPointer, dword_t signature);
+	static bool SystemDescriptionHeaderValid(PSystemDescriptionHeader_t systemDescriptionHeader);
+	private:
+	static dword_t m_smiCommandPort;
+	static byte_t m_enableCommand;
+	static byte_t m_disableCommand;
+	static dword_t m_pm1AControlBlock;
+	static dword_t m_pm1BControlBlock;
+	static word_t m_slpTypA;
+	static word_t m_slpTypB;
+	static word_t m_slpEn;
+	static word_t m_sciEn;
+	static byte_t m_pm1ControlLength;
+};
 
 #endif

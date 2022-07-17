@@ -1,6 +1,7 @@
 make.exe --dry-run --keep-going --print-directory
 make: Entering directory 'c:/Users/���/Documents/Data/skylight-operating-system'
-make: Leaving directory 'c:/Users/���/Documents/Data/skylight-operating-system'
  
 make: *** No targets specified and no makefile found.  Stop.
 
+make: Leaving directory 'c:/Users/���/Documents/Data/skylight-operating-system'
+ 

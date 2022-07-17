@@ -30,23 +30,15 @@ typedef struct DeclareAttribute(packed) {
 	byte_t	BaseHigh;
 } GlobalDescriptorTableEntry_t, *PGlobalDescriptorTableEntry_t;
 
-extern GlobalDescriptorTableRegister_t gdtSelectedRegister;
-extern PGlobalDescriptorTableEntry_t gdtSelectedTable;
-extern size_t gdtSelectedLength;
-
-void SelectGdt(
-	PGlobalDescriptorTableEntry_t pGlobalDescriptorTableEntry,
-	size_t length
-);
-
-void InitializeGdtEntry(
-	size_t index,
-	dword_t limit,
-	dword_t base,
-	byte_t access,
-	byte_t flags
-);
-
-#define LoadGdt()	DeclareAssembly("lgdt %0"::"m"(gdtSelectedRegister))
+class GlobalDescriptorTableManager {
+	public:
+	static void Select(PGlobalDescriptorTableEntry_t table, size_t length);
+	static void SetEntry(size_t index, dword_t limit, dword_t base, byte_t access, byte_t flags);
+	static void Load();
+	private:
+	static GlobalDescriptorTableRegister_t m_register;
+	static PGlobalDescriptorTableEntry_t m_table;
+	static size_t m_length;
+};
 
 #endif
