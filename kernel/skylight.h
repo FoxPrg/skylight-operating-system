@@ -9,6 +9,7 @@
 #include <drivers/pit.h>
 #include <drivers/acpi.h>
 #include <drivers/memory.h>
+#include <drivers/paging.h>
 
 extern void* SkylightBegin;
 extern void* SkylightEnd;

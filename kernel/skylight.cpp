@@ -59,19 +59,12 @@ extern "C" void SkylightEntry(PMemoryRegion_t table, size_t length) {
 		);
 	}
 
-	void *a, *b, *c;
-	a = Memory::Allocate(MEMORY_FRAME_SIZE);
-	b = Memory::Allocate(MEMORY_FRAME_SIZE * 100);
-	c = Memory::Allocate(MEMORY_FRAME_SIZE * 10);
-	Terminal::PrintFormat("a - alloc: 0x%X\r\n", a);
-	Terminal::PrintFormat("b - alloc: 0x%X\r\n", b);
-	Terminal::PrintFormat("c - alloc: 0x%X\r\n", c);
-	Terminal::PrintFormat("a - free: %u\r\n", Memory::Free(a));
-	Terminal::PrintFormat("b - free: %u\r\n", Memory::Free(b));
-	a = Memory::Allocate(MEMORY_FRAME_SIZE * 101);
-	Terminal::PrintFormat("a - alloc: 0x%X\r\n", a);
-	Terminal::PrintFormat("a - free: %u\r\n", Memory::Free(a));
-	Terminal::PrintFormat("c - free: %u\r\n", Memory::Free(c));
+	/* Paging::Initialize(Memory::Allocate(0x1000000), Memory::Allocate(0x400));
+	Paging::MapTables(0, 0x400, PAGING_FLAG_PRESENT | PAGING_FLAG_READ_WRITE);
+	Paging::MapPages(0, 0, 0x1000000, PAGING_FLAG_PRESENT | PAGING_FLAG_READ_WRITE);
+	Paging::Enable(); */
+
+	
 
 	DeclareAssembly("jmp .");
 

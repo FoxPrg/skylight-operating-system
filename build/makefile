@@ -10,7 +10,7 @@ asm-objects=$(asm-sources:.asm=-asm.o)
 
 compile-flags=-std=c++17 -m32 -ffreestanding -nostdlib -O0 -Wall -Wextra -fno-exceptions -fno-rtti -I ../
 link-flags=-m32 -ffreestanding -O0 -nostdlib -T link.ld -march=$(target)
-run-flags=-drive format=raw,file=bin/$(out) -m 2G -monitor stdio -d cpu_reset -D dbg.txt
+run-flags=-drive format=raw,file=bin/$(out) -m 2G -monitor stdio -d cpu_reset -D dbg.txt -accel hax
 
 all:
 	$(MAKE) build
@@ -40,4 +40,4 @@ run:
 	$(emu) $(run-flags)
 
 clean:
-	rm -rf dbg.txt ../**/*.bin  ./**/*.bin *.bin $(cpp-objects) $(asm-objects) 
+	rm -rf dbg.txt ../**/*.bin  ./**/*.bin *.bin $(cpp-objects) $(asm-objects)
