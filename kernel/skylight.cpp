@@ -6,7 +6,7 @@ GlobalDescriptorTableRegister_t gdtRegister;
 InterruptDescriptorTableEntry_t idt[256];
 InterruptDescriptorTableRegister_t idtRegister;
 
-extern "C" void SkylightEntry(PMemoryDescriptor_t table, size_t length) {
+extern "C" void SkylightEntry(PMemoryRegion_t table, size_t length) {
 	Terminal::PrintFormat("Loading GDT...\t");
 	GlobalDescriptorTableManager::Select(gdt, sizeof(gdt)/sizeof(gdt[0]));
 	GlobalDescriptorTableManager::SetEntry(0, 0, 0, 0, 0);						//	null descriptor
@@ -43,17 +43,20 @@ extern "C" void SkylightEntry(PMemoryDescriptor_t table, size_t length) {
 	Memory::Exclude(KERNEL_BEGIN, KERNEL_LENGTH);
 	Memory::Exclude(EBDA_BEGIN, EBDA_LENGTH);
 	Memory::Exclude(ISA_HOLE_BEGIN, ISA_HOLE_LENGTH);
-	Memory::Exclude((size_t)table, (Memory::GetDescriptorsCount() + 1) * sizeof(MemoryDescriptor_t));
+	Memory::Exclude((size_t)table, (Memory::GetRegionsCount() + 1) * sizeof(MemoryRegion_t));
 	Memory::Initialize();
 
-	length = Memory::GetDescriptorsCount();
+	length = Memory::GetRegionsCount();
 
 	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nRegions (%u):\r\n", TERMINAL_COLOR_LIME, length);
-	PMemoryDescriptor_t pdecsr;
+	PMemoryRegion_t pdecsr;
 	for (size_t i = 0; i < length; i++) {
-		pdecsr = Memory::GetDescriptor(i);
+		pdecsr = Memory::GetRegion(i);
 		Terminal::PrintFormat("\tAddress: %eb0x%X%ee\tLength: %eb0x%X%ee\tType: %eb%u%ee\r\n",
-			TERMINAL_COLOR_AZURE, (size_t)pdecsr->Address, TERMINAL_COLOR_AZURE, (size_t)pdecsr->Length, TERMINAL_COLOR_AZURE, (size_t)pdecsr->Type);
+			TERMINAL_COLOR_AZURE, (size_t)pdecsr->Address,
+			TERMINAL_COLOR_AZURE, (size_t)pdecsr->Length * MEMORY_FRAME_SIZE,
+			TERMINAL_COLOR_AZURE, (size_t)pdecsr->Type
+		);
 	}
 
 	DeclareAssembly("jmp .");
