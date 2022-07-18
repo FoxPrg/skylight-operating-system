@@ -31,7 +31,8 @@ class Memory {
 	static void RemoveByIndex(size_t index);
 	static void Initialize();
 
-	static void* Allocate(size_t count);
+	static void *Allocate(size_t count);
+	static void *ReAllocate(void *memory, size_t count);
 	static bool Free(void *memory);
 
 	static size_t GetRegionsCount();

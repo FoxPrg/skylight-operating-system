@@ -80,18 +80,18 @@ void Memory::Initialize() {
 		m_table[i].Length = frames_count;
 
 		if (m_table[i].Type == MEMORY_REGION_TYPE_USABLE) {
-			PFrameDescriptor_t frames = (PFrameDescriptor_t)frame_target;
-			size_t frame_target = AlignUp(m_table[i].Length * sizeof(FrameDescriptor_t), MEMORY_FRAME_SIZE);
-			for (size_t i = 0; i < m_table[i].Length; i++) {
-				frames[i].Address = frame_target;
-				frames[i].Attributes = 0;
-				frames[i].Count = 1;
+			PFrameDescriptor_t frames = (PFrameDescriptor_t)m_table[i].Address;
+			for (size_t j = 0; j < m_table[i].Length; j++) {
+				frames[j].Address = frame_target;
+				frames[j].Attributes = 0;
+				frames[j].Count = 1;
+				frame_target += MEMORY_FRAME_SIZE;
 			}
 		}
 	}
 }
 
-void* Memory::Allocate(size_t count) {
+void *Memory::Allocate(size_t count) {
 	count = AlignUp(count, MEMORY_FRAME_SIZE) / MEMORY_FRAME_SIZE;
 	PFrameDescriptor_t frames;
 	bool busy;
@@ -119,6 +119,17 @@ void* Memory::Allocate(size_t count) {
 	}
 
 	return nullptr;
+}
+
+void *Memory::ReAllocate(void *memory, size_t count) {
+	if (!memory) return nullptr;
+	puint8_t rememory = (puint8_t)Allocate(count);
+	for (size_t i = 0; i < count; i++) rememory[i] = ((puint8_t)memory)[i];
+	if (!Free(memory)) {
+		Free(rememory);
+		return nullptr;
+	}
+	return rememory;
 }
 
 bool Memory::Free(void *memory) {
@@ -160,12 +171,14 @@ void Memory::Set(void *destination, const byte_t value, size_t count) {
 	for (size_t i = 0; i < count; i++) ((pbyte_t)destination)[i] = value;
 }
 
-void *operator new[](unsigned int s)
-{
+void *operator new[](size_t s) {
     return Memory::Allocate(s);
 }
 
-void operator delete[](void *p)
-{
+void operator delete[](void *p) {
+    Memory::Free(p);
+}
+
+void operator delete[](void *p, size_t) {
     Memory::Free(p);
 }
