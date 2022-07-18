@@ -159,3 +159,13 @@ void Memory::Copy(void *destination, const void *source, size_t count) {
 void Memory::Set(void *destination, const byte_t value, size_t count) {
 	for (size_t i = 0; i < count; i++) ((pbyte_t)destination)[i] = value;
 }
+
+void *operator new[](unsigned int s)
+{
+    return Memory::Allocate(s);
+}
+
+void operator delete[](void *p)
+{
+    Memory::Free(p);
+}
