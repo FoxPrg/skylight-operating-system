@@ -38,6 +38,15 @@ extern "C" void SkylightEntry(PMemoryDescriptor_t table, size_t length) {
 	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nInitializing MDT...\t", TERMINAL_COLOR_LIME);
 
 	Memory::Select(table, length);
+	Memory::Exclude(IVT_BEGIN, IVT_LENGTH);
+	Memory::Exclude(BDA_BEGIN, BDA_LENGTH);
+	Memory::Exclude(KERNEL_BEGIN, KERNEL_LENGTH);
+	Memory::Exclude(EBDA_BEGIN, EBDA_LENGTH);
+	Memory::Exclude(ISA_HOLE_BEGIN, ISA_HOLE_LENGTH);
+	Memory::Exclude((size_t)table, (Memory::GetDescriptorsCount() + 1) * sizeof(MemoryDescriptor_t));
+	Memory::Initialize();
+
+	length = Memory::GetDescriptorsCount();
 
 	Terminal::PrintFormat("[%ebSUCCESS%ee]\r\nRegions (%u):\r\n", TERMINAL_COLOR_LIME, length);
 	PMemoryDescriptor_t pdecsr;

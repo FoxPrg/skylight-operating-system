@@ -30,6 +30,57 @@ void Memory::Exclude(size_t start, size_t length) {
 	}
 }
 
+void Memory::Initialize() {
+	Align();
+	Sort();
+	RemoveUseless();
+	Merge();
+}
+
+void Memory::Sort() {
+	MemoryDescriptor_t tmp;
+	for (size_t i = 0; i < m_count; i++) {
+		for (size_t j = i + 1; j < m_count; j++) {
+			if (m_table[j].Address < m_table[i].Address) {
+				tmp = m_table[i];
+				m_table[i] = m_table[j];
+				m_table[j] = tmp;
+			}
+		}
+	}
+}
+
+void Memory::Align() {
+	for (size_t i = 0; i < m_count; i++) {
+		m_table[i].Address = AlignUp(m_table[i].Address, MEMORY_PAGE_SIZE);
+		m_table[i].Length = AlignDown(m_table[i].Length, MEMORY_PAGE_SIZE);
+		if (!m_table[i].Length) {
+			for (size_t j = i + 1; j < m_count; j++) m_table[j - 1] = m_table[j];
+			--m_count;
+			--i;
+		}
+	}
+}
+
+void Memory::RemoveUseless() {
+	for (size_t i = 0; i < m_count; i++) if (!m_table[i].Length) RemoveByIndex(i--);
+}
+
+void Memory::RemoveByIndex(size_t index) {
+	for (size_t j = index + 1; j < m_count; j++) m_table[j - 1] = m_table[j];
+	--m_count;
+}
+
+void Memory::Merge() {
+	for (unsigned int i = 0; i < m_count - 1; i++) {
+        if (m_table[i].Address + m_table[i].Length == m_table[i + 1].Address && m_table[i].Type == m_table[i + 1].Type) {
+            m_table[i].Length = m_table[i + 1].Address + m_table[i + 1].Length - m_table[i].Address;
+			RemoveByIndex(i + 1);
+            --i;
+        }
+    }
+}
+
 size_t Memory::GetDescriptorsCount() {
 	return m_count;
 }

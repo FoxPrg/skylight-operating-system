@@ -45,6 +45,8 @@ _start:
 
 _jumping_to_kernel:
 	[bits 32]
+	mov ebp, [_end+8]
+	mov esp, ebp
 	push esi				;	entries count
 	push edi				;	address of map
 	call [_end]
