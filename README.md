@@ -19,3 +19,8 @@ Protected mode os, written in C++
 -   [ ] Advanced Configuration & Power Interface Manager
     -   [X] Power Off
     -   [ ] Reboot
+-	[X]	Memory driver
+	-	[X]	Allocate
+	-	[X]	Free
+	-	[X]	ReAllocate
+	-	[X]	Operators new & delete overloading
