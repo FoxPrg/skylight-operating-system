@@ -10,6 +10,7 @@
 #include <drivers/acpi.h>
 #include <drivers/memory.h>
 #include <drivers/paging.h>
+#include <drivers/8042.h>
 
 extern void* SkylightBegin;
 extern void* SkylightEnd;

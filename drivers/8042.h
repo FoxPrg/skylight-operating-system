@@ -1,0 +1,23 @@
+#ifndef CONTROLLER_8042
+#define CONTROLLER_8042
+
+#include "io.h"
+
+#define CONTROLLER_8042_PORT_DATA		0x60
+#define CONTROLLER_8042_PORT_COMMAND	0x64
+#define CONTROLLER_8042_PORT_STATUS		0x64
+
+#define CONTROLLER_8042_STATUS_OUTPUT	1
+#define CONTROLLER_8042_STATUS_INPUT	2
+
+#define CONTROLLER_8042_COMMAND_READ_OUTPUT		0xd0
+#define CONTROLLER_8042_COMMAND_WRITE_OUTPUT	0xd1
+#define CONTROLLER_8042_COMMAND_RESET			0xfe
+
+class Controller8042 {
+	public:
+	static void WaitInput();
+	static void Reset();
+};
+
+#endif

@@ -16,11 +16,12 @@ Protected mode os, written in C++
     -   [X] Exceptions Manager
     -   [X] Hardware Interrupts Manager
 -   [X] Programmable Interval Timer
--   [ ] Advanced Configuration & Power Interface Manager
+-   [X] Advanced Configuration & Power Interface Manager
     -   [X] Power Off
-    -   [ ] Reboot
 -	[X]	Memory driver
 	-	[X]	Allocate
 	-	[X]	Free
 	-	[X]	ReAllocate
 	-	[X]	Operators new & delete overloading
+-	[X]	Controller 8042
+	-	[X]	Reset
