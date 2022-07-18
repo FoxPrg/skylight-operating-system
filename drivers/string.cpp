@@ -1,6 +1,6 @@
 #include "string.h"
 
-char String::m_conversionBuffer[16] = {
+const char String::m_conversionBuffer[16] = {
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 	'a', 'b', 'c', 'd', 'e', 'f'
 };
@@ -14,22 +14,19 @@ void String::FromSigned(decimal_t value, byte_t base, char* buffer) {
 	else FromSigned(value, base, buffer);
 }
 
-void String::FromUnsigned(decimal_t value, byte_t base, char* buffer) {
-	puint8_t buffcopy = (puint8_t)buffer;
+void String::FromUnsigned(size_t value, byte_t base, char* buffer) {
 	size_t copy = value;
 	size_t length = 0;
 
 	do {
 		copy /= base;
 		++length;
-	} while(copy);
+	} while(copy != 0);
 
-	buffcopy[length] = 0;
-	buffcopy += length - 1;
+	buffer[length] = 0;
 
-	for (; length; length--) {
-		*buffcopy = m_conversionBuffer[value % base];
+	for (size_t i = 0; i < length; i++) {
+		buffer[length - i - 1] = m_conversionBuffer[value % base];
 		value /= base;
-		--buffcopy;
 	}
 }

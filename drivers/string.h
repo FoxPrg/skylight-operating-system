@@ -6,9 +6,9 @@
 class String {
 	public:
 	static void FromSigned(decimal_t value, byte_t base, char* buffer);
-	static void FromUnsigned(decimal_t value, byte_t base, char* buffer);
+	static void FromUnsigned(size_t value, byte_t base, char* buffer);
 	private:
-	static char m_conversionBuffer[16];
+	static const char m_conversionBuffer[16];
 };
 
 #endif

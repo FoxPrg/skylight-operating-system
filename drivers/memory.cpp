@@ -1,42 +1,41 @@
 #include "memory.h"
 
 PMemoryDescriptor_t Memory::m_table;
-size_t Memory::m_descriptorSize;
 size_t Memory::m_count;
 
-void Memory::Select(PMemoryDescriptor_t table, size_t descriptorSize, size_t count) {
+void Memory::Select(PMemoryDescriptor_t table, size_t count) {
 	m_table = table;
-	m_descriptorSize = descriptorSize;
 	m_count = count;
 }
 
 void Memory::Exclude(size_t start, size_t length) {
 	const size_t ex_end = start + length;
 	size_t end;
-	PMemoryDescriptor_t pointer = (PMemoryDescriptor_t)&m_table[0], pAdditional;
+
 	for (size_t i = 0; i < m_count; i++) {
-		end = pointer->Address + pointer->Length;
-		if (pointer->Address >= start && end <= ex_end) pointer->Type = MEMORY_DESCRIPTOR_TYPE_RESERVED;
-		else if (pointer->Address < start && end > ex_end) {
-			pAdditional = (PMemoryDescriptor_t)((size_t)m_table + m_descriptorSize * m_count);
-
-			pAdditional->Address = ex_end;
-			pAdditional->Length = end - ex_end;
-			pAdditional->Type = pointer->Type;
-			if (m_descriptorSize >= sizeof(MemoryDescriptor_t)) pAdditional->ExtendedFlags = pointer->ExtendedFlags;
-
-			pointer->Length = start - pointer->Address;
-
+		end = m_table[i].Address + m_table[i].Length;
+		if (m_table[i].Address >= start && end <= ex_end) m_table[i].Type = MEMORY_DESCRIPTOR_TYPE_RESERVED;
+		else if (m_table[i].Address < start && end > ex_end) {
+			m_table[m_count].Address = ex_end;
+			m_table[m_count].Length = end - ex_end;
+			m_table[m_count].Type = m_table[i].Type;
+			m_table[i].Length = start - m_table[i].Address;
 			++m_count;
 		}
-		else if (pointer->Address <= start && end > start && end <= ex_end) pointer->Length = end - pointer->Address;
-		else if (pointer->Address >= start && pointer->Address <= ex_end && end >= ex_end) {
-			pointer->Address = ex_end;
-			pointer->Length = end - ex_end;
+		else if (m_table[i].Address <= start && end > start && end <= ex_end) m_table[i].Length = end - m_table[i].Address;
+		else if (m_table[i].Address >= start && m_table[i].Address <= ex_end && end >= ex_end) {
+			m_table[i].Address = ex_end;
+			m_table[i].Length = end - ex_end;
 		}
-
-		pointer = (PMemoryDescriptor_t)((size_t)pointer + m_descriptorSize);
 	}
+}
+
+size_t Memory::GetDescriptorsCount() {
+	return m_count;
+}
+
+PMemoryDescriptor_t Memory::GetDescriptor(size_t index) {
+	return &m_table[index];
 }
 
 void Memory::Copy(void *destination, const void *source, size_t count) {

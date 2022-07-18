@@ -39,7 +39,7 @@ void Terminal::PutString(const char* str) {
 void Terminal::PrintFormat(const char* format, ...) {
 	const byte_t color = m_color;
 	psize_t pArgument = (psize_t)((size_t)&format + sizeof(char*));
-	byte_t notation;
+	byte_t base;
 	
 	for (size_t i = 0; format[i]; i++) {
 		if (format[i] == '%') {
@@ -53,11 +53,11 @@ void Terminal::PrintFormat(const char* format, ...) {
 				else if (format[i] == 'e') m_color = color;
 			}
 			else if (format[i] == 'b' || format[i] == 'o' || format[i] == 'u' || format[i] == 'x') {
-				if (format[i] == 'b') notation = 2;
-				else if (format[i] == 'o') notation = 8;
-				else if (format[i] == 'u') notation = 10;
-				else if (format[i] == 'x') notation = 16;
-				String::FromUnsigned((decimal_t)*pArgument++, notation, m_conversionBuffer);
+				if (format[i] == 'b') base = 2;
+				else if (format[i] == 'o') base = 8;
+				else if (format[i] == 'u') base = 10;
+				else if (format[i] == 'x') base = 16;
+				String::FromUnsigned(*pArgument++, base, m_conversionBuffer);
 				PutString(m_conversionBuffer);
 			}
 			else if (format[i] == 'd') {
@@ -65,7 +65,7 @@ void Terminal::PrintFormat(const char* format, ...) {
 				PutString(m_conversionBuffer);
 			}
 			else if (format[i] == 'X') {
-				String::FromUnsigned((decimal_t)*pArgument++, 16, m_conversionBuffer);
+				String::FromUnsigned(*pArgument++, 16, m_conversionBuffer);
 				for (size_t i = 0; m_conversionBuffer[i]; i++)
 					if (m_conversionBuffer[i] >= 'a' && m_conversionBuffer[i] <= 'f') m_conversionBuffer[i] &= '_';
 				PutString(m_conversionBuffer);

@@ -45,7 +45,6 @@ _start:
 
 _jumping_to_kernel:
 	[bits 32]
-	push ecx				;	size of entry
 	push esi				;	entries count
 	push edi				;	address of map
 	call [_end]

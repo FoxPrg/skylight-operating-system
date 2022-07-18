@@ -3,7 +3,6 @@
 ;	Output:
 ;	es:di - filled table
 ;	si - entries count
-;	cl - size of entry
 memory_get_map:
 	push eax
 	push ecx
@@ -17,19 +16,24 @@ memory_get_map:
 	mov ecx, 0x00000018
 	int 0x15
 	jc memory_get_map_end
-	inc si
-	mov ch, 0
-	add di, cx
-	mov [memory_get_map_entry_size], cl
 	memory_get_map_loop:
+
+		cmp cl, 0x18
+		jl memory_get_map_loop_next
+		mov eax, [di+0x14]							;	if it's bad memory
+		and eax, 0x00000001
+		test eax, eax
+		jnz memory_get_map_loop_next
+
+		mov dword [di+0x10], 0x00000002				;	mark as reserved
+	memory_get_map_loop_next:
+		add di, 0x14
+		inc si
+
 		mov eax, 0x0000e820
 		mov ecx, 0x00000018
 		int 0x15
 		jc memory_get_map_end
-
-		mov ch, 0
-		add di, cx
-		inc si
 
 		test ebx, ebx
 		jnz memory_get_map_loop
@@ -39,9 +43,7 @@ memory_get_map:
 		pop edx
 		pop ecx
 		pop eax
-		mov cl, [memory_get_map_entry_size]
 		ret
-memory_get_map_entry_size:	db	0x00
 
 ;	Input:
 ;	eax - address
