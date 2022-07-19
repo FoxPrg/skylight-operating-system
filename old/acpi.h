@@ -14,6 +14,8 @@
 
 #define ACPI_SIGNATURE_S5_OBJECT								0x5F35535F
 
+#define ACPI_BOOT_ARCH_FLAG_8042_EXISTS							2
+
 typedef struct DeclareAttribute(packed) {
 	qword_t	Signature;
 	byte_t	Checksum;
@@ -107,7 +109,7 @@ class AdvancedPowerAndConfigurationInterface {
 	public:
 	static bool Initialize();
 	static bool Shutdown();
-	// static bool Reboot();	Not implemented yet
+	static bool Exists8042();
 	static PRootSystemDescriptionPointer_t FindRootSystemDescriptionPointer();
 	static PSystemDescriptionHeader_t FindRootSystemDescriptionTable(PRootSystemDescriptionPointer_t rootSystemDescriptionPointer);
 	static PSystemDescriptionHeader_t FindSystemDescriptionTable(PSystemDescriptionHeader_t rootSystemDescriptionTable, dword_t signature);
@@ -123,8 +125,7 @@ class AdvancedPowerAndConfigurationInterface {
 	static word_t m_slpEn;
 	static word_t m_sciEn;
 	static byte_t m_pm1ControlLength;
-	/* static word_t m_resetPort;
-	static byte_t m_resetValue; */
+	static bool m_8042Exists;
 };
 
 #endif

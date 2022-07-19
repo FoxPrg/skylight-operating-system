@@ -1,14 +1,14 @@
 asm=nasm
-cpp=$(target)-elf-g++
+c=$(target)-elf-gcc
 emu=qemu-system-x86_64
 out=skylight.bin
 
-cpp-sources=$(shell find ../drivers -name "*.cpp") $(shell find ../kernel -name "*.cpp")
-asm-sources=$(shell find ../drivers -name "*.asm") $(shell find ../kernel -name "*.asm")
-cpp-objects=$(cpp-sources:.cpp=-cpp.o)
+c-sources=$(shell find ../libk -name "*.c") $(shell find ../libk -name "*.c")
+asm-sources=$(shell find ../libk -name "*.asm") $(shell find ../libk -name "*.asm")
+c-objects=$(c-sources:.c=-c.o)
 asm-objects=$(asm-sources:.asm=-asm.o)
 
-compile-flags=-std=c++17 -m32 -ffreestanding -nostdlib -O0 -Wall -Wextra -fno-exceptions -fno-rtti -I ../
+compile-flags=-std=c++17 -m32 -ffreestanding -nostdlib -O0 -Wall -Wextra -fno-exceptions -fno-rtti -I ../libk/
 link-flags=-m32 -ffreestanding -O0 -nostdlib -T link.ld -march=$(target)
 run-flags=-drive format=raw,file=bin/$(out) -m 2G -monitor stdio -d cpu_reset -D dbg.txt -accel hax
 
@@ -19,18 +19,18 @@ all:
 
 build:							# make build target=i686
 	$(MAKE) $(asm-objects)
-	$(MAKE) $(cpp-objects)
+	$(MAKE) $(c-objects)
 	$(MAKE) kernel
 	$(MAKE) boot
 
-%-cpp.o:	%.cpp
-	$(cpp) -c $< $(compile-flags) -o $@
+%-c.o:	%.c
+	$(c) -c $< $(compile-flags) -o $@
 
 %-asm.o:	%.asm
 	$(asm) -felf32 $< -o $@
 
-kernel:	$(cpp-objects) $(asm-objects)
-	$(cpp) $^ $(link-flags) -o bin/$@.bin
+kernel:	$(c-objects) $(asm-objects)
+	$(c) $^ $(link-flags) -o bin/$@.bin
 
 boot:
 	$(asm) -i../boot/ -fbin ../boot/main-boot.asm -o ../boot/main-boot.bin
@@ -40,4 +40,4 @@ run:
 	$(emu) $(run-flags)
 
 clean:
-	rm -rf dbg.txt ../**/*.bin  ./**/*.bin *.bin $(cpp-objects) $(asm-objects)
+	rm -rf dbg.txt ../**/*.bin  ./**/*.bin *.bin $(c-objects) $(asm-objects)

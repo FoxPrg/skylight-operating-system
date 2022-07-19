@@ -64,7 +64,7 @@ extern "C" void SkylightEntry(PMemoryRegion_t table, size_t length) {
 	Paging::MapPages(0, 0, 0x1000000, PAGING_FLAG_PRESENT | PAGING_FLAG_READ_WRITE);
 	Paging::Enable(); */
 
-	Controller8042::Reset();
+	Terminal::PrintFormat("8042 exists: %u\r\n", AdvancedPowerAndConfigurationInterface::Exists8042());
 
 	DeclareAssembly("jmp .");
 

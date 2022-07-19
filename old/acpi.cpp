@@ -10,8 +10,7 @@ word_t AdvancedPowerAndConfigurationInterface::m_slpTypB;
 word_t AdvancedPowerAndConfigurationInterface::m_slpEn;
 word_t AdvancedPowerAndConfigurationInterface::m_sciEn;
 byte_t AdvancedPowerAndConfigurationInterface::m_pm1ControlLength;
-/* word_t AdvancedPowerAndConfigurationInterface::m_resetPort;
-byte_t AdvancedPowerAndConfigurationInterface::m_resetValue; */
+bool AdvancedPowerAndConfigurationInterface::m_8042Exists;
 
 bool AdvancedPowerAndConfigurationInterface::Initialize() {
 	PRootSystemDescriptionPointer_t rootSystemDescriptionPointer = FindRootSystemDescriptionPointer();
@@ -21,8 +20,8 @@ bool AdvancedPowerAndConfigurationInterface::Initialize() {
 	pbyte_t pDifferentiated;
 	size_t length;
 
-	/* m_resetPort = (size_t)pFixed->ResetReg.Address;
-	m_resetValue = pFixed->ResetValue; */
+	if (rootSystemDescriptionPointer->Revision >= 2) m_8042Exists = (pFixed->BootArchitectureFlags & ACPI_BOOT_ARCH_FLAG_8042_EXISTS) != 0;
+	else m_8042Exists = 1;
 
 	if (pFixed->DifferentiatedSystemDescriptionTableAddress) {
 		if (*((pdword_t)pFixed->DifferentiatedSystemDescriptionTableAddress) != ACPI_SIGNATURE_DIFFERENTIATED_SYSTEM_DESCRIPTION_TABLE)
@@ -100,13 +99,9 @@ bool AdvancedPowerAndConfigurationInterface::Shutdown() {
 	return true;
 }
 
-/* bool AdvancedPowerAndConfigurationInterface::Reboot() {
-	if (!m_sciEn) return false;
-
-	InputOutputManager::WriteByte(m_resetPort, m_resetValue);
-
-	return true;
-} */
+bool AdvancedPowerAndConfigurationInterface::Exists8042() {
+	return m_8042Exists;
+}
 
 PRootSystemDescriptionPointer_t AdvancedPowerAndConfigurationInterface::FindRootSystemDescriptionPointer() {
 	PRootSystemDescriptionPointer_t pointer;
